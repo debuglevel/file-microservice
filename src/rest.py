@@ -49,6 +49,7 @@ def upload_file():
     with open(f"{DATA_DIRECTORY}/{myUuid}", "wb") as myfile:
         print(f"Writing data for {myUuid} to file {myfile.name}...")
         myfile.write(data)
+        print(f"Wrote data for {myUuid} to file {myfile.name}")
 
     print(f"Returning metadata for {myUuid} to client...")
 

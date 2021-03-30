@@ -74,3 +74,23 @@ def download_file(myUuid: str):
     with open(f"{DATA_DIRECTORY}/{myUuid}") as file:
         print(f"Sending data for {myUuid} to client...")
         return send_file(file.name, attachment_filename=f"{myUuid}", mimetype=f"{content_type}")
+
+@app.route('/files/<myUuid>', methods=['DELETE'])
+def delete_file(myUuid: str):
+    print(f"DELETE /files/{myUuid}")
+    print(f"UUID: {myUuid}")
+
+    print(f"Getting metadata for {myUuid} from database...")
+    Metadata = Query()
+    metadata = db.get(Metadata.uuid == myUuid)
+    print(f"Got metadata for {myUuid} from database: {metadata}")
+
+    print(f"Removing metadata for {myUuid} from database...")
+    db.remove(Metadata.uuid == myUuid)
+    print(f"Removed metadata for {myUuid} from database")
+
+    print(f"Deleting file for {myUuid}...")
+    os.remove(f"{DATA_DIRECTORY}/{myUuid}")
+    print(f"Deleted file for {myUuid}")
+
+    return '', 204

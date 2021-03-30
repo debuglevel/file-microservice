@@ -57,7 +57,7 @@ def upload_file():
         print(f"Wrote data for {myUuid} to file {myfile.name}")
 
     print(f"Returning metadata for {myUuid} to client...")
-    response = make_response(jsonify(metadata), 201) # TODO?
+    response = make_response(jsonify(metadata), 201)
     response.headers["Content-Type"] = "application/json"
     response.headers["Location"] = f"/files/{myUuid}"
     return response
@@ -91,7 +91,7 @@ def update_file(myUuid: str):
         print(f"Wrote data for {myUuid} to file {myfile.name}")
 
     print(f"Returning metadata for {myUuid} to client...")
-    response = make_response(jsonify(metadata), 201) # TODO?
+    response = make_response(jsonify(metadata), 200)
     response.headers["Content-Type"] = "application/json"
     response.headers["Location"] = f"/files/{myUuid}"
     return response

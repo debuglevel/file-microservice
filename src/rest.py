@@ -23,7 +23,12 @@ db = TinyDB(f'{DATA_DIRECTORY}/db.json')
 @app.route("/health")
 def health():
     print('Received GET request on /health', file=sys.stderr)
-    return { "status": "up", "counter": counter }
+    return jsonify(
+        {
+         "status": "up",
+         "files_count": len(db),
+        }
+    )
 
 @app.route('/files/', methods=['POST'])
 def upload_file():
@@ -58,8 +63,6 @@ def upload_file():
     response.headers["Content-Type"] = "application/json"
     response.headers["Location"] = f"/files/{myUuid}"
     return response
-
-    #return json.dumps(metadata)
 
 @app.route('/files/<myUuid>', methods=['GET'])
 def download_file(myUuid: str):

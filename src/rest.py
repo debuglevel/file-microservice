@@ -57,6 +57,11 @@ def upload_file():
         print(f"Wrote data for {myUuid} to file {myfile.name}")
 
     print(f"Returning metadata for {myUuid} to client...")
+    response = make_response(jsonify(metadata), 201) # TODO?
+    response.headers["Content-Type"] = "application/json"
+    response.headers["Location"] = f"/files/{myUuid}"
+    return response
+
 @app.route('/files/<myUuid>', methods=['PUT'])
 def update_file(myUuid: str):
     print(f"PUT /files/{myUuid}")
@@ -71,7 +76,7 @@ def update_file(myUuid: str):
     Metadata = Query()
     metadata = db.get(Metadata.uuid == myUuid)
     print(f"Got metadata for {myUuid} from database: {metadata}")
-
+    
     metadata["content_type"] = request.content_type
     metadata["content_length"] = request.content_length
     metadata["size"] = len(data)

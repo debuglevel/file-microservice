@@ -57,9 +57,36 @@ def upload_file():
         print(f"Wrote data for {myUuid} to file {myfile.name}")
 
     print(f"Returning metadata for {myUuid} to client...")
+@app.route('/files/<myUuid>', methods=['PUT'])
+def update_file(myUuid: str):
+    print(f"PUT /files/{myUuid}")
+    print(f"UUID: {myUuid}")
 
+    print(f"Content-Type: {request.content_type}")
+    print(f"Content-Length: {request.content_length}")
+    data = request.get_data()
+    print(f"Length of data: {len(data)}")
 
-    response = make_response(jsonify(metadata), 201)
+    print(f"Getting metadata for {myUuid} from database...")
+    Metadata = Query()
+    metadata = db.get(Metadata.uuid == myUuid)
+    print(f"Got metadata for {myUuid} from database: {metadata}")
+
+    metadata["content_type"] = request.content_type
+    metadata["content_length"] = request.content_length
+    metadata["size"] = len(data)
+
+    print(f"Updating metadata for {myUuid} in database...")
+    db.update(metadata, Metadata.uuid == myUuid)
+    print(f"Updated metadata for {myUuid} in database...")
+
+    with open(f"{DATA_DIRECTORY}/{myUuid}", "wb") as myfile:
+        print(f"Writing data for {myUuid} to file {myfile.name}...")
+        myfile.write(data)
+        print(f"Wrote data for {myUuid} to file {myfile.name}")
+
+    print(f"Returning metadata for {myUuid} to client...")
+    response = make_response(jsonify(metadata), 201) # TODO?
     response.headers["Content-Type"] = "application/json"
     response.headers["Location"] = f"/files/{myUuid}"
     return response
